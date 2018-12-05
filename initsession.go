@@ -10,7 +10,8 @@ import (
 func InitSession(host string, port int, login string, password string) (Session, error) {
 	var session Session
 
-	url := fmt.Sprintf("https://%s:%d/polyanalyst/api/v1.0/login?uname=%s&pwd=%s", host, port, login, password)
+	baseURL := fmt.Sprintf("http://%s:%d/polyanalyst/api/v1.0", host, port)
+	url := baseURL + fmt.Sprintf("/login?uname=%s&pwd=%s", login, password)
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
 		return session, errors.New("building request error: " + err.Error())
@@ -29,7 +30,7 @@ func InitSession(host string, port int, login string, password string) (Session,
 
 	for _, c := range resp.Cookies() {
 		if c.Name == "sid" {
-			return Session{SID: c.Value}, nil
+			return Session{SID: c.Value, BaseURL: baseURL}, nil
 		}
 	}
 
