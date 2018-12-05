@@ -23,15 +23,14 @@ func InitSession(host string, port int, login string, password string) (Session,
 		return session, errors.New("request execution error: " + err.Error())
 	}
 
+	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
 		return session, fmt.Errorf("bad response status: %d", resp.StatusCode)
 	}
-	defer resp.Body.Close()
 
-	for i := 0; i < len(resp.Cookies()); i++ {
-		cookie := resp.Cookies()[i]
-		if cookie.Name == "sid" {
-			return Session{SID: cookie.Value}, nil
+	for _, c := range resp.Cookies() {
+		if c.Name == "sid" {
+			return Session{SID: c.Value}, nil
 		}
 	}
 
