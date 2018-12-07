@@ -3,6 +3,7 @@ package polyanalyst6api
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -10,7 +11,7 @@ import (
 func InitSession(host string, port int, login string, password string) (Session, error) {
 	var session Session
 
-	baseURL := fmt.Sprintf("http://%s:%d/polyanalyst/api/v1.0", host, port)
+	baseURL := fmt.Sprintf("https://%s:%d/polyanalyst/api/v1.0", host, port)
 	url := baseURL + fmt.Sprintf("/login?uname=%s&pwd=%s", login, password)
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
@@ -24,8 +25,16 @@ func InitSession(host string, port int, login string, password string) (Session,
 	}
 
 	defer resp.Body.Close()
+
 	if resp.StatusCode != 200 {
-		return session, fmt.Errorf("bad response status: %d", resp.StatusCode)
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		msg := ""
+		if err != nil {
+			msg = "*failed to retrieve*"
+		} else {
+			msg = string(bodyBytes)
+		}
+		return session, fmt.Errorf("bad response status: %d. Error: %s", resp.StatusCode, msg)
 	}
 
 	for _, c := range resp.Cookies() {
