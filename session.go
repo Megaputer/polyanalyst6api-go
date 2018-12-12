@@ -36,6 +36,24 @@ func (s Session) ProjectNodes(uuid string) ([]objects.Node, error) {
 	return nodesResp.Nodes, nil
 }
 
+// ProjectExecutionStatistics returns execution statistics for specific project `/project/execution-statistics`
+func (s Session) ProjectExecutionStatistics(uuid string) (responses.ProjectExecutionStatistics, error) {
+	var statsResp responses.ProjectExecutionStatistics
+
+	param := "prjUUID=" + uuid
+	nodesData, err := s.request("GET", "/project/execution-statistics", param)
+	if err != nil {
+		return statsResp, errors.New(err.Error())
+	}
+
+	err = json.Unmarshal(nodesData, &statsResp)
+	if err != nil {
+		return statsResp, errors.New(err.Error())
+	}
+
+	return statsResp, nil
+}
+
 // request is used for making requests to the API
 func (s Session) request(reqType string, path string, params string) ([]byte, error) {
 	var (
