@@ -1,6 +1,7 @@
 package polyanalyst6api
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -8,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/gluk-skywalker/polyanalyst6api-go/objects"
+	"github.com/gluk-skywalker/polyanalyst6api-go/parameters"
 	"github.com/gluk-skywalker/polyanalyst6api-go/responses"
 )
 
@@ -21,8 +23,8 @@ type Session struct {
 func (s Session) ProjectNodes(uuid string) ([]objects.Node, error) {
 	var nodes []objects.Node
 
-	param := "prjUUID=" + uuid
-	nodesData, err := s.request("GET", "/project/nodes", param)
+	param := parameters.ProjectNodes{PrjUUID: uuid}
+	nodesData, err := s.request("GET", "/project/nodes", param.ToFullParams())
 	if err != nil {
 		return nodes, errors.New(err.Error())
 	}
@@ -40,8 +42,8 @@ func (s Session) ProjectNodes(uuid string) ([]objects.Node, error) {
 func (s Session) ProjectExecutionStatistics(uuid string) (responses.ProjectExecutionStatistics, error) {
 	var statsResp responses.ProjectExecutionStatistics
 
-	param := "prjUUID=" + uuid
-	nodesData, err := s.request("GET", "/project/execution-statistics", param)
+	param := parameters.ProjectExecutionStatistics{PrjUUID: uuid}
+	nodesData, err := s.request("GET", "/project/execution-statistics", param.ToFullParams())
 	if err != nil {
 		return statsResp, errors.New(err.Error())
 	}
@@ -55,14 +57,14 @@ func (s Session) ProjectExecutionStatistics(uuid string) (responses.ProjectExecu
 }
 
 // request is used for making requests to the API
-func (s Session) request(reqType string, path string, params string) ([]byte, error) {
+func (s Session) request(reqType string, path string, params parameters.FullParams) ([]byte, error) {
 	var (
 		err  error
 		data []byte
 	)
 
-	url := s.BaseURL + path + "?" + params
-	req, err := http.NewRequest(reqType, url, nil)
+	url := s.BaseURL + path + "?" + params.URLParams.Encode()
+	req, err := http.NewRequest(reqType, url, bytes.NewBuffer(params.BodyParams))
 	if err != nil {
 		return data, errors.New("building request error: " + err.Error())
 	}
