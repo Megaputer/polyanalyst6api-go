@@ -1,16 +1,39 @@
 package polyanalyst6api
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/gluk-skywalker/polyanalyst6api-go/objects"
+	"github.com/gluk-skywalker/polyanalyst6api-go/responses"
 )
 
 // Session is used to interact with the API
 type Session struct {
 	SID     string
 	BaseURL string
+}
+
+// ProjectNodes returns the list of project nodes `/project/nodes`
+func (s Session) ProjectNodes(uuid string) ([]objects.Node, error) {
+	var nodes []objects.Node
+
+	param := "prjUUID=" + uuid
+	nodesData, err := s.Request("GET", "/project/nodes", param)
+	if err != nil {
+		return nodes, errors.New(err.Error())
+	}
+
+	var nodesResp responses.Nodes
+	err = json.Unmarshal(nodesData, &nodesResp)
+	if err != nil {
+		return nodes, errors.New(err.Error())
+	}
+
+	return nodesResp.Nodes, nil
 }
 
 // Request is used for making requests to the API
