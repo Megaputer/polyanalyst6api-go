@@ -56,6 +56,12 @@ func (s Session) ProjectExecutionStatistics(uuid string) (responses.ProjectExecu
 	return statsResp, nil
 }
 
+// ProjectExecute starts prject execution `/project/execution-statistics`
+func (s Session) ProjectExecute(params parameters.ProjectExecute) error {
+	_, err := s.request("POST", "/project/execute", params.ToFullParams())
+	return err
+}
+
 // request is used for making requests to the API
 func (s Session) request(reqType string, path string, params parameters.FullParams) ([]byte, error) {
 	var (
@@ -81,7 +87,7 @@ func (s Session) request(reqType string, path string, params parameters.FullPara
 
 	data, errBodyRead := ioutil.ReadAll(resp.Body)
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != 200 && resp.StatusCode != 202 {
 		msg := ""
 		if errBodyRead != nil {
 			msg = "*failed to retrieve*"
