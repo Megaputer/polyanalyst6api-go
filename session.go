@@ -56,9 +56,16 @@ func (s Session) ProjectExecutionStatistics(uuid string) (responses.ProjectExecu
 	return statsResp, nil
 }
 
-// ProjectExecute starts prject execution `/project/execution-statistics`
+// ProjectExecute starts project execution `/project/execution-statistics`
 func (s Session) ProjectExecute(params parameters.ProjectExecute) error {
 	_, err := s.request("POST", "/project/execute", params.ToFullParams())
+	return err
+}
+
+// ProjectGlobalAbort stops project execution: `/project/global-abort`
+func (s Session) ProjectGlobalAbort(uuid string) error {
+	params := parameters.ProjectGlobalAbort{PrjUUID: uuid}
+	_, err := s.request("POST", "/project/global-abort", params.ToFullParams())
 	return err
 }
 
