@@ -22,7 +22,7 @@ func (s Session) ProjectNodes(uuid string) ([]objects.Node, error) {
 	var nodes []objects.Node
 
 	param := "prjUUID=" + uuid
-	nodesData, err := s.Request("GET", "/project/nodes", param)
+	nodesData, err := s.request("GET", "/project/nodes", param)
 	if err != nil {
 		return nodes, errors.New(err.Error())
 	}
@@ -36,8 +36,8 @@ func (s Session) ProjectNodes(uuid string) ([]objects.Node, error) {
 	return nodesResp.Nodes, nil
 }
 
-// Request is used for making requests to the API
-func (s Session) Request(reqType string, path string, params string) ([]byte, error) {
+// request is used for making requests to the API
+func (s Session) request(reqType string, path string, params string) ([]byte, error) {
 	var (
 		err  error
 		data []byte
