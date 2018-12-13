@@ -83,10 +83,17 @@ func (s Session) ProjectUnload(uuid string) error {
 	return err
 }
 
-// ProjectRepair initiates project repairing: `/project/repari`
+// ProjectRepair initiates project repairing: `/project/repair`
 func (s Session) ProjectRepair(uuid string) error {
 	params := parameters.ProjectRepair{PrjUUID: uuid}
 	_, err := s.request("POST", "/project/repair", params.ToFullParams())
+	return err
+}
+
+// ProjectDelete initiates project repairing: `/project/delete`
+func (s Session) ProjectDelete(uuid string, forceUnload bool) error {
+	params := parameters.ProjectDelete{PrjUUID: uuid, ForceUnload: forceUnload}
+	_, err := s.request("POST", "/project/delete", params.ToFullParams())
 	return err
 }
 
