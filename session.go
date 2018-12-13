@@ -76,6 +76,13 @@ func (s Session) ProjectSave(uuid string) error {
 	return err
 }
 
+// ProjectUnload initiates project unloading: `/project/unload`
+func (s Session) ProjectUnload(uuid string) error {
+	params := parameters.ProjectUnload{PrjUUID: uuid}
+	_, err := s.request("POST", "/project/unload", params.ToFullParams())
+	return err
+}
+
 // request is used for making requests to the API
 func (s Session) request(reqType string, path string, params parameters.FullParams) ([]byte, error) {
 	var (
