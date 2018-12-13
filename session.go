@@ -8,9 +8,11 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/gluk-skywalker/polyanalyst6api-go/parameters/project"
+	"github.com/gluk-skywalker/polyanalyst6api-go/responses"
+
 	"github.com/gluk-skywalker/polyanalyst6api-go/objects"
 	"github.com/gluk-skywalker/polyanalyst6api-go/parameters"
-	"github.com/gluk-skywalker/polyanalyst6api-go/responses"
 )
 
 // Session is used to interact with the API
@@ -23,7 +25,7 @@ type Session struct {
 func (s Session) ProjectNodes(uuid string) ([]objects.Node, error) {
 	var nodes []objects.Node
 
-	param := parameters.ProjectNodes{PrjUUID: uuid}
+	param := project.Nodes{PrjUUID: uuid}
 	nodesData, err := s.request("GET", "/project/nodes", param.ToFullParams())
 	if err != nil {
 		return nodes, errors.New(err.Error())
@@ -42,7 +44,7 @@ func (s Session) ProjectNodes(uuid string) ([]objects.Node, error) {
 func (s Session) ProjectExecutionStatistics(uuid string) (responses.ProjectExecutionStatistics, error) {
 	var statsResp responses.ProjectExecutionStatistics
 
-	param := parameters.ProjectExecutionStatistics{PrjUUID: uuid}
+	param := project.ExecutionStatistics{PrjUUID: uuid}
 	nodesData, err := s.request("GET", "/project/execution-statistics", param.ToFullParams())
 	if err != nil {
 		return statsResp, errors.New(err.Error())
@@ -57,48 +59,48 @@ func (s Session) ProjectExecutionStatistics(uuid string) (responses.ProjectExecu
 }
 
 // ProjectExecute starts project execution `/project/execution-statistics`
-func (s Session) ProjectExecute(params parameters.ProjectExecute) error {
+func (s Session) ProjectExecute(params project.Execute) error {
 	_, err := s.request("POST", "/project/execute", params.ToFullParams())
 	return err
 }
 
 // ProjectGlobalAbort stops project execution: `/project/global-abort`
 func (s Session) ProjectGlobalAbort(uuid string) error {
-	params := parameters.ProjectGlobalAbort{PrjUUID: uuid}
+	params := project.GlobalAbort{PrjUUID: uuid}
 	_, err := s.request("POST", "/project/global-abort", params.ToFullParams())
 	return err
 }
 
 // ProjectSave initiates project saving: `/project/save`
 func (s Session) ProjectSave(uuid string) error {
-	params := parameters.ProjectSave{PrjUUID: uuid}
+	params := project.Save{PrjUUID: uuid}
 	_, err := s.request("POST", "/project/save", params.ToFullParams())
 	return err
 }
 
 // ProjectUnload initiates project unloading: `/project/unload`
 func (s Session) ProjectUnload(uuid string) error {
-	params := parameters.ProjectUnload{PrjUUID: uuid}
+	params := project.Unload{PrjUUID: uuid}
 	_, err := s.request("POST", "/project/unload", params.ToFullParams())
 	return err
 }
 
 // ProjectRepair initiates project repairing: `/project/repair`
 func (s Session) ProjectRepair(uuid string) error {
-	params := parameters.ProjectRepair{PrjUUID: uuid}
+	params := project.Repair{PrjUUID: uuid}
 	_, err := s.request("POST", "/project/repair", params.ToFullParams())
 	return err
 }
 
 // ProjectDelete initiates project repairing: `/project/delete`
 func (s Session) ProjectDelete(uuid string, forceUnload bool) error {
-	params := parameters.ProjectDelete{PrjUUID: uuid, ForceUnload: forceUnload}
+	params := project.Delete{PrjUUID: uuid, ForceUnload: forceUnload}
 	_, err := s.request("POST", "/project/delete", params.ToFullParams())
 	return err
 }
 
 // request is used for making requests to the API
-func (s Session) request(reqType string, path string, params parameters.FullParams) ([]byte, error) {
+func (s Session) request(reqType string, path string, params parameters.Full) ([]byte, error) {
 	var (
 		err  error
 		data []byte
