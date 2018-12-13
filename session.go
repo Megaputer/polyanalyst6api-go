@@ -69,6 +69,13 @@ func (s Session) ProjectGlobalAbort(uuid string) error {
 	return err
 }
 
+// ProjectSave initiates project saving: `/project/save`
+func (s Session) ProjectSave(uuid string) error {
+	params := parameters.ProjectSave{PrjUUID: uuid}
+	_, err := s.request("POST", "/project/save", params.ToFullParams())
+	return err
+}
+
 // request is used for making requests to the API
 func (s Session) request(reqType string, path string, params parameters.FullParams) ([]byte, error) {
 	var (
