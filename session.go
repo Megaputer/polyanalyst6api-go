@@ -83,6 +83,13 @@ func (s Session) ProjectUnload(uuid string) error {
 	return err
 }
 
+// ProjectRepair initiates project repairing: `/project/repari`
+func (s Session) ProjectRepair(uuid string) error {
+	params := parameters.ProjectRepair{PrjUUID: uuid}
+	_, err := s.request("POST", "/project/repair", params.ToFullParams())
+	return err
+}
+
 // request is used for making requests to the API
 func (s Session) request(reqType string, path string, params parameters.FullParams) ([]byte, error) {
 	var (
