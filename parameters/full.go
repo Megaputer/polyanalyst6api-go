@@ -9,3 +9,5 @@ type Full struct {
 	URLParams  url.Values
 	BodyParams []byte
 }
+
+// Мне не очень понятна идея с параметрами. Можешь объяснить?

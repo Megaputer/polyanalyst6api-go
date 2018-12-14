@@ -115,6 +115,9 @@ func (s Session) request(reqType string, path string, params parameters.Full) ([
 	cookie := http.Cookie{Name: "sid", Value: s.SID}
 	req.AddCookie(&cookie)
 
+	// Я бы вытащил http клиент в отдельную сущность, чтобы не надо было инициализировать каждый раз.
+	// Для ошибок лучше завести новый объект, типа ErrorRequestFailed, чтобы можно было туда положить
+	// больше информации об ошибке.
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {

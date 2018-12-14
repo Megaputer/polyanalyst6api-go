@@ -11,6 +11,7 @@ import (
 func InitSession(host string, port int, login string, password string) (Session, error) {
 	var session Session
 
+	// Я бы передавал baseURL как параметр на вход.
 	baseURL := fmt.Sprintf("https://%s:%d/polyanalyst/api/v1.0", host, port)
 	url := baseURL + fmt.Sprintf("/login?uname=%s&pwd=%s", login, password)
 	req, err := http.NewRequest("POST", url, nil)

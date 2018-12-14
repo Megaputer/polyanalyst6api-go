@@ -1,3 +1,4 @@
+// Имя файла не по стандарту!
 package responses
 
 import "github.com/gluk-skywalker/polyanalyst6api-go/objects"
