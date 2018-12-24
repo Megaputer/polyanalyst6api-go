@@ -8,11 +8,11 @@ import (
 )
 
 // InitSession is used to start a session
-func InitSession(host string, port int, login string, password string) (Session, error) {
+func InitSession(server *Server, version string, login string, password string) (Session, error) {
 	var session Session
 
-	baseURL := fmt.Sprintf("https://%s:%d/polyanalyst/api/v1.0", host, port)
-	url := baseURL + fmt.Sprintf("/login?uname=%s&pwd=%s", login, password)
+	url := server.BaseURL() + fmt.Sprintf("/%s/login?uname=%s&pwd=%s", version, login, password)
+	fmt.Println(url)
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
 		return session, errors.New("building request error: " + err.Error())
@@ -39,7 +39,7 @@ func InitSession(host string, port int, login string, password string) (Session,
 
 	for _, c := range resp.Cookies() {
 		if c.Name == "sid" {
-			return Session{SID: c.Value, BaseURL: baseURL}, nil
+			return Session{SID: c.Value, Server: server}, nil
 		}
 	}
 

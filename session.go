@@ -20,8 +20,8 @@ import (
 
 // Session is used to interact with the API
 type Session struct {
-	SID     string
-	BaseURL string
+	SID    string
+	Server *Server
 }
 
 // ProjectNodes returns the list of project nodes `/project/nodes`
@@ -130,7 +130,7 @@ func (s Session) request(reqType string, path string, params parameters.Full) ([
 	// turning url paras to RFC 3986 compatible string
 	urlParams := strings.Replace(params.URLParams.Encode(), "+", "%20", -1)
 
-	url := s.BaseURL + path + "?" + urlParams
+	url := s.Server.BaseURL() + path + "?" + urlParams
 	req, err := http.NewRequest(reqType, url, bytes.NewBuffer(params.BodyParams))
 	if err != nil {
 		return data, errors.New("building request error: " + err.Error())
