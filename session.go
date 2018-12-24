@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
+	"github.com/gluk-skywalker/polyanalyst6api-go/parameters/dataset"
 	"github.com/gluk-skywalker/polyanalyst6api-go/parameters/project"
 	"github.com/gluk-skywalker/polyanalyst6api-go/responses"
 
@@ -99,6 +101,17 @@ func (s Session) ProjectDelete(uuid string, forceUnload bool) error {
 	return err
 }
 
+// DatasetPreview returns first 1k records of the dataset: `/dataset/preview`
+func (s Session) DatasetPreview(prjUUID string, name string, nodeType string) (string, error) {
+	params := dataset.Preview{PrjUUID: prjUUID, Name: name, Type: nodeType}
+	resp, err := s.request("GET", "/dataset/preview", params.ToFullParams())
+	if err != nil {
+		return "", err
+	}
+
+	return string(resp), err
+}
+
 // request is used for making requests to the API
 func (s Session) request(reqType string, path string, params parameters.Full) ([]byte, error) {
 	var (
@@ -106,7 +119,10 @@ func (s Session) request(reqType string, path string, params parameters.Full) ([
 		data []byte
 	)
 
-	url := s.BaseURL + path + "?" + params.URLParams.Encode()
+	// turning url paras to RFC 3986 compatible string
+	urlParams := strings.Replace(params.URLParams.Encode(), "+", "%20", -1)
+
+	url := s.BaseURL + path + "?" + urlParams
 	req, err := http.NewRequest(reqType, url, bytes.NewBuffer(params.BodyParams))
 	if err != nil {
 		return data, errors.New("building request error: " + err.Error())
