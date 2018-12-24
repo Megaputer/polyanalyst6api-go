@@ -11,6 +11,7 @@ import (
 
 	"github.com/gluk-skywalker/polyanalyst6api-go/parameters/dataset"
 	"github.com/gluk-skywalker/polyanalyst6api-go/parameters/project"
+	"github.com/gluk-skywalker/polyanalyst6api-go/parameters/scheduler"
 	"github.com/gluk-skywalker/polyanalyst6api-go/responses"
 
 	"github.com/gluk-skywalker/polyanalyst6api-go/objects"
@@ -110,6 +111,13 @@ func (s Session) DatasetPreview(prjUUID string, name string, nodeType string) (s
 	}
 
 	return string(resp), err
+}
+
+// SchedulerRunTask starts the task with passed ID
+func (s Session) SchedulerRunTask(taskID uint) error {
+	params := scheduler.RunTask{TaskID: taskID}
+	_, err := s.request("POST", "/scheduler/run-task", params.ToFullParams())
+	return err
 }
 
 // request is used for making requests to the API
