@@ -20,7 +20,7 @@ func InitSession(server *Server, version string, login string, password string) 
 		return session, errors.New("the server doesn't support API of version " + version)
 	}
 
-	url := server.BaseURL() + fmt.Sprintf("/%s/login?uname=%s&pwd=%s", version, login, password)
+	url := server.BaseURL() + fmt.Sprintf("/v%s/login?uname=%s&pwd=%s", version, login, password)
 	fmt.Println(url)
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {

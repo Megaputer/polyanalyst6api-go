@@ -131,7 +131,7 @@ func (s Session) request(reqType string, path string, params parameters.Full) ([
 	// turning url paras to RFC 3986 compatible string
 	urlParams := strings.Replace(params.URLParams.Encode(), "+", "%20", -1)
 
-	url := s.Server.BaseURL() + path + "?" + urlParams
+	url := s.Server.BaseURL() + "/v" + s.apiVersion + path + "?" + urlParams
 	req, err := http.NewRequest(reqType, url, bytes.NewBuffer(params.BodyParams))
 	if err != nil {
 		return data, errors.New("building request error: " + err.Error())
