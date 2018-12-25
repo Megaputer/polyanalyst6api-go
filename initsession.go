@@ -11,6 +11,15 @@ import (
 func InitSession(server *Server, version string, login string, password string) (Session, error) {
 	var session Session
 
+	supports, err := server.SupportsAPIVersion(version)
+	if err != nil {
+		return session, errors.New("failed to check if the passed API version is supported: " + err.Error())
+	}
+
+	if !supports {
+		return session, errors.New("the server doesn't support API of version " + version)
+	}
+
 	url := server.BaseURL() + fmt.Sprintf("/%s/login?uname=%s&pwd=%s", version, login, password)
 	fmt.Println(url)
 	req, err := http.NewRequest("POST", url, nil)
@@ -39,7 +48,7 @@ func InitSession(server *Server, version string, login string, password string) 
 
 	for _, c := range resp.Cookies() {
 		if c.Name == "sid" {
-			return Session{SID: c.Value, Server: server}, nil
+			return Session{SID: c.Value, Server: server, apiVersion: version}, nil
 		}
 	}
 

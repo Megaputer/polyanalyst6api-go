@@ -20,8 +20,9 @@ import (
 
 // Session is used to interact with the API
 type Session struct {
-	SID    string
-	Server *Server
+	SID        string
+	Server     *Server
+	apiVersion string
 }
 
 // ProjectNodes returns the list of project nodes `/project/nodes`
