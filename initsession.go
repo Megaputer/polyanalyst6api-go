@@ -21,7 +21,6 @@ func InitSession(server *Server, version string, login string, password string) 
 	}
 
 	url := server.BaseURL() + fmt.Sprintf("/v%s/login?uname=%s&pwd=%s", version, login, password)
-	fmt.Println(url)
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
 		return session, errors.New("building request error: " + err.Error())

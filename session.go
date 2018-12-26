@@ -1,12 +1,9 @@
 package polyanalyst6api
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
-	"io/ioutil"
-	"net/http"
+	"runtime"
 	"strings"
 
 	"github.com/gluk-skywalker/polyanalyst6api-go/parameters/dataset"
@@ -123,45 +120,33 @@ func (s Session) SchedulerRunTask(taskID uint) error {
 
 // request is used for making requests to the API
 func (s Session) request(reqType string, path string, params parameters.Full) ([]byte, error) {
-	var (
-		err  error
-		data []byte
-	)
+	var data []byte
 
-	// turning url paras to RFC 3986 compatible string
-	urlParams := strings.Replace(params.URLParams.Encode(), "+", "%20", -1)
+	if !checkPathSupported(s.apiVersion, path) {
+		var methodName string
 
-	url := s.Server.BaseURL() + "/v" + s.apiVersion + path + "?" + urlParams
-	req, err := http.NewRequest(reqType, url, bytes.NewBuffer(params.BodyParams))
-	if err != nil {
-		return data, errors.New("building request error: " + err.Error())
-	}
-
-	cookie := http.Cookie{Name: "sid", Value: s.SID}
-	req.AddCookie(&cookie)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return data, errors.New("request execution error: " + err.Error())
-	}
-	defer resp.Body.Close()
-
-	data, errBodyRead := ioutil.ReadAll(resp.Body)
-
-	if resp.StatusCode != 200 && resp.StatusCode != 202 {
-		msg := ""
-		if errBodyRead != nil {
-			msg = "*failed to retrieve*"
+		pc, _, _, ok := runtime.Caller(1)
+		details := runtime.FuncForPC(pc)
+		if ok && details != nil {
+			methodName = strings.Split(details.Name(), "Session.")[1]
 		} else {
-			msg = string(data)
+			methodName = "n/a"
 		}
-		return data, fmt.Errorf("bad response status: %d. Error: %s", resp.StatusCode, msg)
+
+		versions := pathSupportedIn(path)
+		vstr := "none"
+		if len(versions) > 0 {
+			vstr = strings.Join(versions, ", ")
+		}
+		return data, errors.New("`" + methodName + "` call is not supported in the API version " + s.apiVersion + "; versions that support: " + vstr)
 	}
 
-	if errBodyRead != nil {
-		return data, errors.New("failed to read response")
+	r := request{
+		session: &s,
+		path:    s.Server.BaseURL() + "/v" + s.apiVersion + path,
+		reqType: reqType,
+		params:  params,
 	}
 
-	return data, nil
+	return r.Perform()
 }
