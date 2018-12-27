@@ -141,12 +141,12 @@ func (s Session) request(reqType string, path string, params parameters.Full) ([
 		return data, errors.New("`" + methodName + "` call is not supported in the API version " + s.apiVersion + "; versions that support: " + vstr)
 	}
 
-	r := request{
-		session: &s,
-		path:    s.Server.BaseURL() + "/v" + s.apiVersion + path,
-		reqType: reqType,
-		params:  params,
+	fullURL := s.Server.BaseURL() + "/v" + s.apiVersion + path
+	r, err := CreateRequest(fullURL, reqType, params)
+	if err != nil {
+		return data, err
 	}
+	r.UseSession(&s)
 
 	return r.Perform()
 }

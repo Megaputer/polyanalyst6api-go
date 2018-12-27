@@ -12,10 +12,38 @@ import (
 )
 
 type request struct {
-	session *Session
-	path    string
-	reqType string
-	params  parameters.Full
+	httpReq *http.Request
+	// session *Session
+	// path    string
+	// reqType string
+	// params  parameters.Full
+}
+
+// CreateRequest creates a request
+func CreateRequest(path string, reqType string, params parameters.Full) (request, error) {
+	fmt.Println(path)
+
+	var (
+		retReq request
+		err    error
+	)
+
+	// turning url paras to RFC 3986 compatible string
+	urlParams := strings.Replace(params.URLParams.Encode(), "+", "%20", -1)
+
+	url := path + "?" + urlParams
+
+	req, err := http.NewRequest(reqType, url, bytes.NewBuffer(params.BodyParams))
+	if err != nil {
+		return retReq, errors.New("building request error: " + err.Error())
+	}
+
+	return request{httpReq: req}, nil
+}
+
+func (r *request) UseSession(s *Session) {
+	cookie := http.Cookie{Name: "sid", Value: s.SID}
+	r.httpReq.AddCookie(&cookie)
 }
 
 func (r request) Perform() ([]byte, error) {
@@ -24,21 +52,9 @@ func (r request) Perform() ([]byte, error) {
 		data []byte
 	)
 
-	// turning url paras to RFC 3986 compatible string
-	urlParams := strings.Replace(r.params.URLParams.Encode(), "+", "%20", -1)
-
-	url := r.path + "?" + urlParams
-	req, err := http.NewRequest(r.reqType, url, bytes.NewBuffer(r.params.BodyParams))
-	if err != nil {
-		return data, errors.New("building request error: " + err.Error())
-	}
-
-	cookie := http.Cookie{Name: "sid", Value: r.session.SID}
-	req.AddCookie(&cookie)
-
 	client := &http.Client{}
 
-	resp, err := client.Do(req)
+	resp, err := client.Do(r.httpReq)
 	if err != nil {
 		return data, errors.New("request execution error: " + err.Error())
 	}

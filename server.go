@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
-	"net/http"
+
+	"github.com/gluk-skywalker/polyanalyst6api-go/parameters"
 )
 
 const (
@@ -30,13 +30,13 @@ func (s Server) APIVersions() ([]string, error) {
 		err error
 	)
 
-	resp, err := http.Get(s.BaseURL() + "/versions")
+	url := s.BaseURL() + "/versions"
+	req, err := CreateRequest(url, "GET", parameters.Full{})
 	if err != nil {
 		return vs, err
 	}
-	defer closeBody(resp)
 
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := req.Perform()
 	if err != nil {
 		return vs, err
 	}
