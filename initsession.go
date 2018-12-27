@@ -27,12 +27,12 @@ func InitSession(server *Server, version string, login string, password string) 
 	}
 
 	client := &http.Client{}
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return session, errors.New("request execution error: " + err.Error())
 	}
-
-	defer resp.Body.Close()
+	defer closeBody(resp)
 
 	if resp.StatusCode != 200 {
 		bodyBytes, err := ioutil.ReadAll(resp.Body)

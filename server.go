@@ -31,10 +31,10 @@ func (s Server) APIVersions() ([]string, error) {
 	)
 
 	resp, err := http.Get(s.BaseURL() + "/versions")
-	defer resp.Body.Close()
 	if err != nil {
 		return vs, err
 	}
+	defer closeBody(resp)
 
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

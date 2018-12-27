@@ -37,11 +37,12 @@ func (r request) Perform() ([]byte, error) {
 	req.AddCookie(&cookie)
 
 	client := &http.Client{}
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return data, errors.New("request execution error: " + err.Error())
 	}
-	defer resp.Body.Close()
+	defer closeBody(resp)
 
 	data, errBodyRead := ioutil.ReadAll(resp.Body)
 
