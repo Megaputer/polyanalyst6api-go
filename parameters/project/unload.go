@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/url"
 
-	"github.com/gluk-skywalker/polyanalyst6api-go/parameters"
+	"github.com/Megaputer/polyanalyst6api-go/parameters"
 )
 
 // Unload is the structure for Unload: `/project/unload`

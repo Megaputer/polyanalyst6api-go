@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gluk-skywalker/polyanalyst6api-go/parameters"
+	"github.com/Megaputer/polyanalyst6api-go/parameters"
 )
 
 type request struct {

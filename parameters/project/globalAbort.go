@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/url"
 
-	"github.com/gluk-skywalker/polyanalyst6api-go/parameters"
+	"github.com/Megaputer/polyanalyst6api-go/parameters"
 )
 
 // GlobalAbort is the structure for GlobalAbort: `/project/global-abort`

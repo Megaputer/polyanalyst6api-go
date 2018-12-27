@@ -3,7 +3,7 @@ package project
 import (
 	"net/url"
 
-	"github.com/gluk-skywalker/polyanalyst6api-go/parameters"
+	"github.com/Megaputer/polyanalyst6api-go/parameters"
 )
 
 // ExecutionStatistics is the structure for ExecutionStatistics: `/project/execution-statistics`

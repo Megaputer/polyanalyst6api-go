@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/url"
 
-	"github.com/gluk-skywalker/polyanalyst6api-go/objects"
-	"github.com/gluk-skywalker/polyanalyst6api-go/parameters"
+	"github.com/Megaputer/polyanalyst6api-go/objects"
+	"github.com/Megaputer/polyanalyst6api-go/parameters"
 )
 
 // Execute is the structure for Execute: `/project/execute`

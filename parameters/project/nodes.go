@@ -3,7 +3,7 @@ package project
 import (
 	"net/url"
 
-	"github.com/gluk-skywalker/polyanalyst6api-go/parameters"
+	"github.com/Megaputer/polyanalyst6api-go/parameters"
 )
 
 // Nodes is the structure for Nodes: `/project/nodes`

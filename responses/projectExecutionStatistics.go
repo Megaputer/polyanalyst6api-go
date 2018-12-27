@@ -1,6 +1,6 @@
 package responses
 
-import "github.com/gluk-skywalker/polyanalyst6api-go/objects"
+import "github.com/Megaputer/polyanalyst6api-go/objects"
 
 // ProjectExecutionStatistics is the struct for `/project/execution-statistics` request response
 type ProjectExecutionStatistics struct {

@@ -3,7 +3,7 @@ package dataset
 import (
 	"net/url"
 
-	"github.com/gluk-skywalker/polyanalyst6api-go/parameters"
+	"github.com/Megaputer/polyanalyst6api-go/parameters"
 )
 
 // Preview is the structure for Preview: `/project/preview`

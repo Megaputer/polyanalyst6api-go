@@ -6,13 +6,13 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/gluk-skywalker/polyanalyst6api-go/parameters/dataset"
-	"github.com/gluk-skywalker/polyanalyst6api-go/parameters/project"
-	"github.com/gluk-skywalker/polyanalyst6api-go/parameters/scheduler"
-	"github.com/gluk-skywalker/polyanalyst6api-go/responses"
+	"github.com/Megaputer/polyanalyst6api-go/parameters/dataset"
+	"github.com/Megaputer/polyanalyst6api-go/parameters/project"
+	"github.com/Megaputer/polyanalyst6api-go/parameters/scheduler"
+	"github.com/Megaputer/polyanalyst6api-go/responses"
 
-	"github.com/gluk-skywalker/polyanalyst6api-go/objects"
-	"github.com/gluk-skywalker/polyanalyst6api-go/parameters"
+	"github.com/Megaputer/polyanalyst6api-go/objects"
+	"github.com/Megaputer/polyanalyst6api-go/parameters"
 )
 
 // Session is used to interact with the API
