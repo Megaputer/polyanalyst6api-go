@@ -19,10 +19,7 @@ type request struct {
 	// params  parameters.Full
 }
 
-// CreateRequest creates a request
-func CreateRequest(path string, reqType string, params parameters.Full) (request, error) {
-	fmt.Println(path)
-
+func createRequest(path string, reqType string, params parameters.Full) (request, error) {
 	var (
 		retReq request
 		err    error

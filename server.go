@@ -31,7 +31,7 @@ func (s Server) APIVersions() ([]string, error) {
 	)
 
 	url := s.BaseURL() + "/versions"
-	req, err := CreateRequest(url, "GET", parameters.Full{})
+	req, err := createRequest(url, "GET", parameters.Full{})
 	if err != nil {
 		return vs, err
 	}

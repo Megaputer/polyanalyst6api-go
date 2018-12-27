@@ -142,7 +142,7 @@ func (s Session) request(reqType string, path string, params parameters.Full) ([
 	}
 
 	fullURL := s.Server.BaseURL() + "/v" + s.apiVersion + path
-	r, err := CreateRequest(fullURL, reqType, params)
+	r, err := createRequest(fullURL, reqType, params)
 	if err != nil {
 		return data, err
 	}
