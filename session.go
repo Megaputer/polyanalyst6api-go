@@ -118,6 +118,25 @@ func (s Session) SchedulerRunTask(taskID uint) error {
 	return err
 }
 
+// ProjectTasks returns the list of project tasks: `/project/tasks`
+func (s Session) ProjectTasks(uuid string) ([]objects.ProjectTaskInfo, error) {
+	var tasks []objects.ProjectTaskInfo
+
+	param := project.Tasks{PrjUUID: uuid}
+	tasksData, err := s.request("GET", "/project/tasks", param.ToFullParams())
+	if err != nil {
+		return tasks, errors.New(err.Error())
+	}
+
+	var tasksResp responses.ProjectTasks
+	err = json.Unmarshal(tasksData, &tasksResp)
+	if err != nil {
+		return tasks, errors.New(err.Error())
+	}
+
+	return tasksResp, nil
+}
+
 // request is used for making requests to the API
 func (s Session) request(reqType string, path string, params parameters.Full) ([]byte, error) {
 	var data []byte
