@@ -1,7 +1,6 @@
 package project
 
 import (
-	"encoding/json"
 	"net/url"
 
 	"github.com/Megaputer/polyanalyst6api-go/parameters"
@@ -18,10 +17,11 @@ func (p Tasks) ToFullParams() parameters.Full {
 }
 
 func (p Tasks) toURLParams() url.Values {
-	return nil
+	params := url.Values{}
+	params.Set("prjUUID", p.PrjUUID)
+	return params
 }
 
 func (p Tasks) toJSON() []byte {
-	jsonParams, _ := json.Marshal(p)
-	return jsonParams
+	return nil
 }
