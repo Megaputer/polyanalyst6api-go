@@ -1,7 +1,6 @@
 package polyanalyst6api
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -13,24 +12,24 @@ func InitSession(server *Server, version string, login string, password string) 
 
 	supports, err := server.SupportsAPIVersion(version)
 	if err != nil {
-		return session, errors.New("failed to check if the passed API version is supported: " + err.Error())
+		return session, fmt.Errorf("failed to check if the passed API version is supported: %s", err)
 	}
 
 	if !supports {
-		return session, errors.New("the server doesn't support API of version " + version)
+		return session, fmt.Errorf("the server doesn't support API of version %s", version)
 	}
 
 	url := server.BaseURL() + fmt.Sprintf("/v%s/login?uname=%s&pwd=%s", version, login, password)
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
-		return session, errors.New("building request error: " + err.Error())
+		return session, fmt.Errorf("building request error: %s", err)
 	}
 
 	client := &http.Client{}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return session, errors.New("request execution error: " + err.Error())
+		return session, fmt.Errorf("request execution error: %s", err)
 	}
 	defer closeBody(resp)
 
@@ -51,5 +50,5 @@ func InitSession(server *Server, version string, login string, password string) 
 		}
 	}
 
-	return session, errors.New("login response does not contain the sid")
+	return session, fmt.Errorf("login response does not contain the sid")
 }

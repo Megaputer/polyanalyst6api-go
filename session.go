@@ -2,7 +2,6 @@ package polyanalyst6api
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"runtime"
 	"strings"
@@ -166,7 +165,7 @@ func (s Session) request(reqType string, path string, params parameters.Full) ([
 		if len(versions) > 0 {
 			vstr = strings.Join(versions, ", ")
 		}
-		return data, errors.New("`" + methodName + "` call is not supported in the API version " + s.apiVersion + "; versions that support: " + vstr)
+		return data, fmt.Errorf("'%s' call is not supported in the API version %s; versions that support: %s", methodName, s.apiVersion, vstr)
 	}
 
 	fullURL := s.Server.BaseURL() + "/v" + s.apiVersion + path

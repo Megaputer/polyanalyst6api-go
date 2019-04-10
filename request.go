@@ -2,7 +2,6 @@ package polyanalyst6api
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -32,7 +31,7 @@ func createRequest(path string, reqType string, params parameters.Full) (request
 
 	req, err := http.NewRequest(reqType, url, bytes.NewBuffer(params.BodyParams))
 	if err != nil {
-		return retReq, errors.New("building request error: " + err.Error())
+		return retReq, fmt.Errorf("building request error: %s", err)
 	}
 
 	return request{httpReq: req}, nil
@@ -53,7 +52,7 @@ func (r request) Perform() ([]byte, error) {
 
 	resp, err := client.Do(r.httpReq)
 	if err != nil {
-		return data, errors.New("request execution error: " + err.Error())
+		return data, fmt.Errorf("request execution error: %s", err)
 	}
 	defer closeBody(resp)
 
@@ -70,7 +69,7 @@ func (r request) Perform() ([]byte, error) {
 	}
 
 	if errBodyRead != nil {
-		return data, errors.New("failed to read response")
+		return data, fmt.Errorf("failed to read response")
 	}
 
 	return data, nil
