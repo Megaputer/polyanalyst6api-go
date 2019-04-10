@@ -30,13 +30,13 @@ func (s Session) ProjectNodes(uuid string) ([]objects.Node, error) {
 	param := project.Nodes{PrjUUID: uuid}
 	nodesData, err := s.request("GET", "/project/nodes", param.ToFullParams())
 	if err != nil {
-		return nodes, errors.New(err.Error())
+		return nodes, err
 	}
 
 	var nodesResp responses.Nodes
 	err = json.Unmarshal(nodesData, &nodesResp)
 	if err != nil {
-		return nodes, errors.New(err.Error())
+		return nodes, err
 	}
 
 	return nodesResp.Nodes, nil
@@ -49,12 +49,12 @@ func (s Session) ProjectExecutionStatistics(uuid string) (responses.ProjectExecu
 	param := project.ExecutionStatistics{PrjUUID: uuid}
 	nodesData, err := s.request("GET", "/project/execution-statistics", param.ToFullParams())
 	if err != nil {
-		return statsResp, errors.New(err.Error())
+		return statsResp, err
 	}
 
 	err = json.Unmarshal(nodesData, &statsResp)
 	if err != nil {
-		return statsResp, errors.New(err.Error())
+		return statsResp, err
 	}
 
 	return statsResp, nil
@@ -134,13 +134,13 @@ func (s Session) ProjectTasks(uuid string) ([]objects.ProjectTaskInfo, error) {
 	param := project.Tasks{PrjUUID: uuid}
 	tasksData, err := s.request("GET", "/project/tasks", param.ToFullParams())
 	if err != nil {
-		return tasks, errors.New(err.Error())
+		return tasks, err
 	}
 
 	var tasksResp responses.ProjectTasks
 	err = json.Unmarshal(tasksData, &tasksResp)
 	if err != nil {
-		return tasks, errors.New(err.Error())
+		return tasks, err
 	}
 
 	return tasksResp, nil
