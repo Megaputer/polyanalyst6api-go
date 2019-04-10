@@ -102,17 +102,22 @@ func (s Session) ProjectDelete(uuid string, forceUnload bool) error {
 }
 
 // DatasetPreview returns first 1k records of the dataset: `/dataset/preview`
-func (s Session) DatasetPreview(prjUUID string, name string, nodeType string) (string, error) {
+func (s Session) DatasetPreview(prjUUID string, name string, nodeType string) ([][]byte, error) {
+	res := [][]byte{}
+
 	if nodeType != "DataSource" && nodeType != "Dataset" {
-		return "", fmt.Errorf("invalid node type: '%s' (only 'DataSource' and 'Dataset' types are available)", nodeType)
+		return res, fmt.Errorf("invalid node type: '%s' (only 'DataSource' and 'Dataset' types are allowed)", nodeType)
 	}
+
 	params := dataset.Preview{PrjUUID: prjUUID, Name: name, Type: nodeType}
 	resp, err := s.request("GET", "/dataset/preview", params.ToFullParams())
 	if err != nil {
-		return "", err
+		return res, err
 	}
 
-	return string(resp), err
+	err = json.Unmarshal(resp, &res)
+
+	return res, err
 }
 
 // SchedulerRunTask starts the task with passed ID
