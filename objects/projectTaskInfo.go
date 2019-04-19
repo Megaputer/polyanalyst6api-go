@@ -5,7 +5,7 @@ type ProjectTaskInfo struct {
 	Name         string  `json:"name"`
 	ObjID        int     `json:"objId"`
 	Progress     float64 `json:"progress"`
-	SubProgress  int     `json:"subProgress"`
+	SubProgress  float64 `json:"subProgress"`
 	CurrentState string  `json:"currentState"`
 	StartTime    int64   `json:"startTime"`
 }
