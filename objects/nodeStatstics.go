@@ -7,11 +7,11 @@ type NodeStatistics struct {
 	Name              string  `json:"name"`
 	Status            string  `json:"status"`
 	ErrMsg            string  `json:"errMsg"`
-	StartTime         float32 `json:"startTime"`
-	EndTime           float32 `json:"endTime"`
-	Duration          float32 `json:"duration"`
-	FreeMemoryInitial float32 `json:"freeMemoryInitial"`
-	FreeMemoryFinal   float32 `json:"freeMemoryFinal"`
-	FreeDiscInitial   float32 `json:"freeDiscInitial"`
-	FreeDiscFinal     float32 `json:"freeDiscFinal"`
+	StartTime         float64 `json:"startTime"`
+	EndTime           float64 `json:"endTime"`
+	Duration          float64 `json:"duration"`
+	FreeMemoryInitial float64 `json:"freeMemoryInitial"`
+	FreeMemoryFinal   float64 `json:"freeMemoryFinal"`
+	FreeDiscInitial   float64 `json:"freeDiscInitial"`
+	FreeDiscFinal     float64 `json:"freeDiscFinal"`
 }
