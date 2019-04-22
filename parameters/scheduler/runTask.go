@@ -9,7 +9,7 @@ import (
 
 // RunTask is the struct for parameters of `/scheduler/run-task`
 type RunTask struct {
-	TaskID uint `json:"taskId"`
+	TaskID int64 `json:"taskId"`
 }
 
 // ToFullParams turns the Unload to full request params

@@ -120,7 +120,7 @@ func (s Session) DatasetPreview(prjUUID string, name string, nodeType string) ([
 }
 
 // SchedulerRunTask starts the task with passed ID
-func (s Session) SchedulerRunTask(taskID uint) error {
+func (s Session) SchedulerRunTask(taskID int64) error {
 	params := scheduler.RunTask{TaskID: taskID}
 	_, err := s.request("POST", "/scheduler/run-task", params.ToFullParams())
 	return err

@@ -2,7 +2,7 @@ package objects
 
 // NodeStatistics is the structure for node statistics
 type NodeStatistics struct {
-	ID                uint    `json:"id"`
+	ID                int64    `json:"id"`
 	Type              string  `json:"type"`
 	Name              string  `json:"name"`
 	Status            string  `json:"status"`
