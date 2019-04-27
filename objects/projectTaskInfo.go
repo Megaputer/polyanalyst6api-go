@@ -7,5 +7,5 @@ type ProjectTaskInfo struct {
 	Progress     float64 `json:"progress"`
 	SubProgress  float64 `json:"subProgress"`
 	CurrentState string  `json:"currentState"`
-	StartTime    int64   `json:"startTime"`
+	StartTime    int     `json:"startTime"`
 }

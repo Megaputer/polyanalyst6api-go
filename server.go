@@ -14,7 +14,7 @@ const (
 // Server is the struct for server data representation
 type Server struct {
 	Host string
-	Port int64
+	Port int
 }
 
 // BaseURL returns base API url for the server
