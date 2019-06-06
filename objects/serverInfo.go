@@ -7,7 +7,7 @@ type ServerInfo struct {
 	GitSHA1 struct {
 		Dicts string `json:"dicts"`
 		Help  string `json:"help"`
-		Pa    string `json:"pa"`
+		PA    string `json:"pa"`
 		Webui string `json:"webui"`
 	} `json:"gitSHA1"`
 }
