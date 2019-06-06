@@ -145,6 +145,23 @@ func (s Session) ProjectTasks(uuid string) ([]objects.ProjectTaskInfo, error) {
 	return tasksResp, nil
 }
 
+// ServerInfo returns the list of project tasks: `/server/info`
+func (s Session) ServerInfo() (responses.ServerInfo, error) {
+	var info responses.ServerInfo
+
+	tasksData, err := s.request("GET", "/server/info", parameters.Full{})
+	if err != nil {
+		return info, err
+	}
+
+	err = json.Unmarshal(tasksData, &info)
+	if err != nil {
+		return info, err
+	}
+
+	return info, nil
+}
+
 // request is used for making requests to the API
 func (s Session) request(reqType string, path string, params parameters.Full) ([]byte, error) {
 	var data []byte

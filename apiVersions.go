@@ -13,6 +13,7 @@ var apiVersions = map[string][]string{
 		"/dataset/preview",
 		"/scheduler/run-task",
 		"/project/tasks",
+		"/server/info",
 	},
 }
 
