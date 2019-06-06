@@ -8,3 +8,8 @@ type PABUSY struct {
 func (e PABUSY) Error() string {
 	return e.err
 }
+
+func IsPABUSY(err error) bool {
+	_, ok := err.(PABUSY)
+	return ok
+}
