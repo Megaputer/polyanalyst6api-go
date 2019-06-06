@@ -65,6 +65,13 @@ func (r request) Perform() ([]byte, error) {
 		} else {
 			msg = string(data)
 		}
+
+		fullMsg := fmt.Sprintf("bad response status: %d. Error: %s", resp.StatusCode, msg)
+
+		if resp.StatusCode == 503 {
+			return data, PABUSY{err: fullMsg}
+		}
+
 		return data, fmt.Errorf("bad response status: %d. Error: %s", resp.StatusCode, msg)
 	}
 
