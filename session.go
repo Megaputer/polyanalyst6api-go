@@ -6,6 +6,7 @@ import (
 	"runtime"
 	"strings"
 
+	cfgparams "github.com/Megaputer/polyanalyst6api-go/parameters/configureParameters"
 	"github.com/Megaputer/polyanalyst6api-go/parameters/dataset"
 	"github.com/Megaputer/polyanalyst6api-go/parameters/project"
 	"github.com/Megaputer/polyanalyst6api-go/parameters/scheduler"
@@ -143,6 +144,12 @@ func (s Session) ProjectTasks(uuid string) ([]objects.ProjectTaskInfo, error) {
 	}
 
 	return tasksResp, nil
+}
+
+// ParametersConfigure sets the parameters of Parmeters node
+func (s Session) ParametersConfigure(param cfgparams.ConfigureParameters) error {
+	_, err := s.request("POST", "/parameters/configure", param.ToFullParams())
+	return err
 }
 
 // ServerInfo returns the list of project tasks: `/server/info`

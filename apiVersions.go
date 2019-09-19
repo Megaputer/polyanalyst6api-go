@@ -14,6 +14,7 @@ var apiVersions = map[string][]string{
 		"/scheduler/run-task",
 		"/project/tasks",
 		"/server/info",
+		"/parameters/configure",
 	},
 }
 
