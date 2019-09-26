@@ -9,6 +9,7 @@ func (e PABUSY) Error() string {
 	return e.err
 }
 
+// IsPABUSY determines if this is a PABUSY error
 func IsPABUSY(err error) bool {
 	_, ok := err.(PABUSY)
 	return ok
