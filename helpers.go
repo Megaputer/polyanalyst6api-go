@@ -7,3 +7,7 @@ import (
 func closeBody(r *http.Response) {
 	_ = r.Body.Close()
 }
+
+func isMain() bool {
+	return branch == "main"
+}

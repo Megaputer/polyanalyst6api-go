@@ -2,6 +2,7 @@ package polyanalyst6api
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -16,6 +17,10 @@ type request struct {
 	// path    string
 	// reqType string
 	// params  parameters.Full
+}
+
+type serverErrorData struct {
+	Content ServerError `json:"error"`
 }
 
 func createRequest(path string, reqType string, params parameters.Full) (request, error) {
@@ -56,27 +61,27 @@ func (r request) Perform() ([]byte, error) {
 	}
 	defer closeBody(resp)
 
-	data, errBodyRead := ioutil.ReadAll(resp.Body)
-
-	if resp.StatusCode != 200 && resp.StatusCode != 202 {
-		msg := ""
-		if errBodyRead != nil {
-			msg = "*failed to retrieve*"
-		} else {
-			msg = string(data)
-		}
-
-		fullMsg := fmt.Sprintf("bad response status: %d. Error: %s", resp.StatusCode, msg)
-
-		if resp.StatusCode == 503 {
-			return data, PABUSY{err: fullMsg}
-		}
-
-		return data, fmt.Errorf("bad response status: %d. Error: %s", resp.StatusCode, msg)
+	data, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return data, fmt.Errorf("failed to read response body: %s", err)
 	}
 
-	if errBodyRead != nil {
-		return data, fmt.Errorf("failed to read response")
+	if resp.StatusCode != 200 && resp.StatusCode != 202 {
+		msg := string(data)
+		var serverErr ServerError
+		if isMain() {
+			serverErr.Code = resp.StatusCode
+			serverErr.Title = msg
+			return data, fmt.Errorf("server error: %s", serverErr)
+		}
+
+		var errorData serverErrorData
+		err = json.Unmarshal(data, &errorData)
+		if err != nil {
+			return data, fmt.Errorf("failed to parse server error [%s]: %s", msg, err)
+		}
+
+		return data, fmt.Errorf("server error: %s", errorData.Content)
 	}
 
 	return data, nil
