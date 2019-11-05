@@ -7,7 +7,7 @@ import (
 )
 
 // InitSession is used to start a session
-func InitSession(server *Server, version string, login string, password string) (Session, error) {
+func InitSession(server *Server, version string, login string, password string, useLDAP bool, LDAPServer string) (Session, error) {
 	var session Session
 
 	supports, err := server.SupportsAPIVersion(version)
@@ -19,7 +19,7 @@ func InitSession(server *Server, version string, login string, password string) 
 		return session, fmt.Errorf("the server doesn't support API of version %s", version)
 	}
 
-	url := server.BaseURL() + fmt.Sprintf("/v%s/login?uname=%s&pwd=%s", version, login, password)
+	url := server.BaseURL() + fmt.Sprintf("/v%s/login?uname=%s&pwd=%s&useLDAP=%s&svr=%s", version, login, password, boolToURLParam(useLDAP), LDAPServer)
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
 		return session, fmt.Errorf("building request error: %s", err)

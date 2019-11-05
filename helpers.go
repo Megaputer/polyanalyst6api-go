@@ -11,3 +11,10 @@ func closeBody(r *http.Response) {
 func isMain() bool {
 	return branch == "main"
 }
+
+func boolToURLParam(b bool) string {
+	if b {
+		return "1"
+	}
+	return "0"
+}
