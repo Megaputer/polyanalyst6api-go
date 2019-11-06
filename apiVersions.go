@@ -15,6 +15,7 @@ var apiVersions = map[string][]string{
 		"/project/tasks",
 		"/server/info",
 		"/parameters/configure",
+		"/parameters/nodes",
 	},
 }
 

@@ -169,6 +169,27 @@ func (s Session) ServerInfo() (responses.ServerInfo, error) {
 	return info, nil
 }
 
+func (s Session) lol() error {
+	return fmt.Errorf("lol kek")
+}
+
+// ParametersAvailableNodes returns the available nodes that configured via Parameters node: `/parameters/nodes`
+func (s Session) ParametersAvailableNodes() ([]responses.ParametersAvailableNode, error) {
+	var res []responses.ParametersAvailableNode
+
+	data, err := s.request("GET", "/parameters/nodes", parameters.Full{})
+	if err != nil {
+		return res, err
+	}
+
+	err = json.Unmarshal(data, &res)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
 // request is used for making requests to the API
 func (s Session) request(reqType string, path string, params parameters.Full) ([]byte, error) {
 	var data []byte
