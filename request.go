@@ -72,7 +72,7 @@ func (r request) Perform() ([]byte, error) {
 		if isMain() {
 			serverErr.Code = resp.StatusCode
 			serverErr.Title = msg
-			return data, fmt.Errorf("server error: %s", serverErr)
+			return data, serverErr
 		}
 
 		var errorData serverErrorData
@@ -81,7 +81,7 @@ func (r request) Perform() ([]byte, error) {
 			return data, fmt.Errorf("failed to parse server error [%s]: %s", msg, err)
 		}
 
-		return data, fmt.Errorf("server error: %s", errorData.Content)
+		return data, errorData.Content
 	}
 
 	return data, nil
