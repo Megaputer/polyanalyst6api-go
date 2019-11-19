@@ -10,6 +10,7 @@ import (
 	"github.com/Megaputer/polyanalyst6api-go/parameters/dataset"
 	"github.com/Megaputer/polyanalyst6api-go/parameters/project"
 	"github.com/Megaputer/polyanalyst6api-go/parameters/scheduler"
+	"github.com/Megaputer/polyanalyst6api-go/parameters/userfolder"
 	"github.com/Megaputer/polyanalyst6api-go/responses"
 
 	"github.com/Megaputer/polyanalyst6api-go/objects"
@@ -188,6 +189,26 @@ func (s Session) ParametersAvailableNodes() ([]responses.ParametersAvailableNode
 	}
 
 	return res, nil
+}
+
+// UserFolderCreate creates a folder in the user directory: `/folder/create`
+func (s Session) UserFolderCreate(path string, name string) error {
+	params := userfolder.Create{
+		Path: path,
+		Name: name,
+	}
+	_, err := s.request("POST", "/folder/create", params.ToFullParams())
+	return err
+}
+
+// UserFolderDelete creates a folder in the user directory: `/folder/delete`
+func (s Session) UserFolderDelete(path string, name string) error {
+	params := userfolder.Delete{
+		Path: path,
+		Name: name,
+	}
+	_, err := s.request("POST", "/folder/delete", params.ToFullParams())
+	return err
 }
 
 // request is used for making requests to the API
