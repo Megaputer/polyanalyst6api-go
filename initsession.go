@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 // InitSession is used to start a session
@@ -25,7 +26,9 @@ func InitSession(server *Server, version string, login string, password string, 
 		return session, fmt.Errorf("building request error: %s", err)
 	}
 
-	client := &http.Client{}
+	client := &http.Client{
+		Timeout: time.Minute * 1,
+	}
 
 	resp, err := client.Do(req)
 	if err != nil {
