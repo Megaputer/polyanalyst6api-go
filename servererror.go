@@ -1,6 +1,8 @@
 package polyanalyst6api
 
-import "fmt"
+import (
+	"strconv"
+)
 
 // ServerError represents PolyAnalyst server error
 type ServerError struct {
@@ -18,5 +20,12 @@ func (e ServerError) Msg() string {
 }
 
 func (e ServerError) Error() string {
-	return fmt.Sprintf("%d: %s: %s", e.Code, e.Title, e.Msg())
+	msg := strconv.Itoa(e.Code)
+	if len(e.Title) > 0 {
+		msg += ": " + e.Title
+	}
+	if len(e.Message) > 0 {
+		msg += ": " + e.Message
+	}
+	return msg
 }
