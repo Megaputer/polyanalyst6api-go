@@ -170,10 +170,6 @@ func (s Session) ServerInfo() (responses.ServerInfo, error) {
 	return info, nil
 }
 
-func (s Session) lol() error {
-	return fmt.Errorf("lol kek")
-}
-
 // ParametersAvailableNodes returns the available nodes that configured via Parameters node: `/parameters/nodes`
 func (s Session) ParametersAvailableNodes() ([]responses.ParametersAvailableNode, error) {
 	var res []responses.ParametersAvailableNode
