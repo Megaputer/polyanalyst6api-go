@@ -211,6 +211,13 @@ func (s Session) UserFolderDelete(path string, name string) error {
 	return err
 }
 
+// Logout log out the user: `/logout`
+func (s Session) Logout() error {
+	params := parameters.Full{}
+	_, err := s.request("GET", "/logout", params)
+	return err
+}
+
 // request is used for making requests to the API
 func (s Session) request(reqType string, path string, params parameters.Full) ([]byte, error) {
 	var data []byte

@@ -18,6 +18,7 @@ var apiVersions = map[string][]string{
 		"/parameters/nodes",
 		"/folder/create",
 		"/folder/delete",
+		"/logout",
 	},
 }
 
