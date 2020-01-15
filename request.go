@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/Megaputer/polyanalyst6api-go/parameters"
 )
@@ -55,7 +54,7 @@ func (r request) Perform() ([]byte, error) {
 	)
 
 	client := &http.Client{
-		Timeout: time.Minute * 1,
+		Timeout: RequestTimeout,
 	}
 
 	resp, err := client.Do(r.httpReq)
