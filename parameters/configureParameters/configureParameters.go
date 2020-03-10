@@ -10,9 +10,10 @@ import (
 
 // ConfigureParameters is the structure for Preview: `/parameters/configure`
 type ConfigureParameters struct {
-	PrjUUID    string
-	ObjID      int
-	Parameters interface {
+	PrjUUID       string
+	ObjID         int
+	DeclareUnsync bool
+	Parameters    interface {
 		nodeType() string
 		settings() interface{}
 	}
@@ -32,11 +33,13 @@ func (p ConfigureParameters) toURLParams() url.Values {
 
 func (p ConfigureParameters) toJSON() []byte {
 	var params struct {
-		NodeType string      `json:"type"`
-		Settings interface{} `json:"settings"`
+		NodeType      string      `json:"type"`
+		DeclareUnsync bool        `json:"declareUnsync"`
+		Settings      interface{} `json:"settings"`
 	}
 	params.NodeType = p.Parameters.nodeType()
 	params.Settings = p.Parameters.settings()
+	params.DeclareUnsync = p.DeclareUnsync
 	jsonParams, _ := json.Marshal(params)
 	return jsonParams
 }
