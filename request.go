@@ -69,18 +69,10 @@ func (r request) Perform() ([]byte, error) {
 	}
 
 	if resp.StatusCode != 200 && resp.StatusCode != 202 {
-		msg := string(data)
-		var serverErr ServerError
-		if isMain() {
-			serverErr.Code = resp.StatusCode
-			serverErr.Title = msg
-			return data, serverErr
-		}
-
 		var errorData serverErrorData
 		err = json.Unmarshal(data, &errorData)
 		if err != nil {
-			return data, fmt.Errorf("failed to parse server error [%s]: %s", msg, err)
+			return data, fmt.Errorf("failed to parse server error [%s]: %s", data, err)
 		}
 
 		return data, errorData.Content
