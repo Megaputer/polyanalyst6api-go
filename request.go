@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
+	"strconv"
 	"strings"
 
 	"github.com/Megaputer/polyanalyst6api-go/parameters"
@@ -47,10 +49,10 @@ func (r *request) UseSession(s *Session) {
 	r.httpReq.AddCookie(&cookie)
 }
 
-func (r request) Perform() ([]byte, error) {
+func (r request) Perform() (RequestResult, error) {
 	var (
-		err  error
-		data []byte
+		err    error
+		result RequestResult
 	)
 
 	client := &http.Client{
@@ -59,24 +61,40 @@ func (r request) Perform() ([]byte, error) {
 
 	resp, err := client.Do(r.httpReq)
 	if err != nil {
-		return data, fmt.Errorf("request execution error: %s", err)
+		return result, fmt.Errorf("request execution error: %s", err)
 	}
 	defer closeBody(resp)
 
-	data, err = ioutil.ReadAll(resp.Body)
+	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return data, fmt.Errorf("failed to read response body: %s", err)
+		return result, fmt.Errorf("failed to read response body: %s", err)
 	}
 
 	if resp.StatusCode != 200 && resp.StatusCode != 202 {
 		var errorData serverErrorData
 		err = json.Unmarshal(data, &errorData)
 		if err != nil {
-			return data, fmt.Errorf("failed to parse server error [%s]: %s", data, err)
+			return result, fmt.Errorf("failed to parse server error [%s]: %s", data, err)
 		}
 
-		return data, errorData.Content
+		return result, errorData.Content
 	}
 
-	return data, nil
+	result.Body = data
+	locURL, err := resp.Location()
+	if err == nil {
+		params, err := url.ParseQuery(locURL.RawQuery)
+		if err == nil {
+			execWaveStrings, ok := params["executionWave"]
+			if ok && len(execWaveStrings) > 0 {
+				execWaveInt, err := strconv.Atoi(execWaveStrings[0])
+				if err == nil {
+					result.Additions.ExecutionWaveID = new(int)
+					result.Additions.ExecutionWaveID = &execWaveInt
+				}
+			}
+		}
+	}
+
+	return result, nil
 }

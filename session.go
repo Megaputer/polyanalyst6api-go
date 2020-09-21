@@ -35,7 +35,7 @@ func (s Session) ProjectNodes(uuid string) ([]objects.Node, error) {
 	}
 
 	var nodesResp responses.Nodes
-	err = json.Unmarshal(nodesData, &nodesResp)
+	err = json.Unmarshal(nodesData.Body, &nodesResp)
 	if err != nil {
 		return nodes, err
 	}
@@ -53,7 +53,7 @@ func (s Session) ProjectExecutionStatistics(uuid string) (responses.ProjectExecu
 		return statsResp, err
 	}
 
-	err = json.Unmarshal(nodesData, &statsResp)
+	err = json.Unmarshal(nodesData.Body, &statsResp)
 	if err != nil {
 		return statsResp, err
 	}
@@ -62,9 +62,32 @@ func (s Session) ProjectExecutionStatistics(uuid string) (responses.ProjectExecu
 }
 
 // ProjectExecute starts project execution `/project/execution-statistics`
-func (s Session) ProjectExecute(params project.Execute) error {
-	_, err := s.request("POST", "/project/execute", params.ToFullParams())
-	return err
+func (s Session) ProjectExecute(params project.Execute) (int, error) {
+	result, err := s.request("POST", "/project/execute", params.ToFullParams())
+	if err != nil {
+		return 0, err
+	}
+	if result.Additions.ExecutionWaveID != nil && *result.Additions.ExecutionWaveID < 1 {
+		return 0, fmt.Errorf("Bad execution wave ID")
+	}
+	return *result.Additions.ExecutionWaveID, nil
+}
+
+// ProjectIsRunning returns true if project is running, false otherwise
+func (s Session) ProjectIsRunning(params project.IsRunning) (bool, error) {
+	resp, err := s.request("GET", "/project/is-running", params.ToFullParams())
+	if err != nil {
+		return false, err
+	}
+	var res struct {
+		Result int `json:"result"`
+	}
+	err = json.Unmarshal(resp.Body, &res)
+	if err != nil {
+		return false, err
+	}
+
+	return res.Result != 0, nil
 }
 
 // ProjectGlobalAbort stops project execution: `/project/global-abort`
@@ -116,7 +139,7 @@ func (s Session) DatasetPreview(prjUUID string, name string, nodeType string) ([
 		return res, err
 	}
 
-	err = json.Unmarshal(resp, &res)
+	err = json.Unmarshal(resp.Body, &res)
 
 	return res, err
 }
@@ -139,7 +162,7 @@ func (s Session) ProjectTasks(uuid string) ([]objects.ProjectTaskInfo, error) {
 	}
 
 	var tasksResp responses.ProjectTasks
-	err = json.Unmarshal(tasksData, &tasksResp)
+	err = json.Unmarshal(tasksData.Body, &tasksResp)
 	if err != nil {
 		return tasks, err
 	}
@@ -162,7 +185,7 @@ func (s Session) ServerInfo() (responses.ServerInfo, error) {
 		return info, err
 	}
 
-	err = json.Unmarshal(tasksData, &info)
+	err = json.Unmarshal(tasksData.Body, &info)
 	if err != nil {
 		return info, err
 	}
@@ -179,7 +202,7 @@ func (s Session) ParametersAvailableNodes() ([]responses.ParametersAvailableNode
 		return res, err
 	}
 
-	err = json.Unmarshal(data, &res)
+	err = json.Unmarshal(data.Body, &res)
 	if err != nil {
 		return res, err
 	}
@@ -215,8 +238,8 @@ func (s Session) Logout() error {
 }
 
 // request is used for making requests to the API
-func (s Session) request(reqType string, path string, params parameters.Full) ([]byte, error) {
-	var data []byte
+func (s Session) request(reqType string, path string, params parameters.Full) (RequestResult, error) {
+	var result RequestResult
 
 	if !checkPathSupported(s.apiVersion, path) {
 		var methodName string
@@ -234,13 +257,13 @@ func (s Session) request(reqType string, path string, params parameters.Full) ([
 		if len(versions) > 0 {
 			vstr = strings.Join(versions, ", ")
 		}
-		return data, fmt.Errorf("'%s' call is not supported in the API version %s; versions that support: %s", methodName, s.apiVersion, vstr)
+		return result, fmt.Errorf("'%s' call is not supported in the API version %s; versions that support: %s", methodName, s.apiVersion, vstr)
 	}
 
 	fullURL := s.Server.BaseURL() + "/v" + s.apiVersion + path
 	r, err := createRequest(fullURL, reqType, params)
 	if err != nil {
-		return data, err
+		return result, err
 	}
 	r.UseSession(&s)
 

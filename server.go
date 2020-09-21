@@ -40,7 +40,7 @@ func (s Server) APIVersions() ([]string, error) {
 		return vs, err
 	}
 
-	err = json.Unmarshal(data, &vs)
+	err = json.Unmarshal(data.Body, &vs)
 
 	return vs, err
 }

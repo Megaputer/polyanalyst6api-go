@@ -19,6 +19,7 @@ var apiVersions = map[string][]string{
 		"/folder/create",
 		"/folder/delete",
 		"/logout",
+		"/project/is-running",
 	},
 }
 
