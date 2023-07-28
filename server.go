@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Megaputer/polyanalyst6api-go/parameters"
+	"github.com/Megaputer/polyanalyst6api-go/responses"
 )
 
 const (
@@ -15,6 +16,11 @@ const (
 type Server struct {
 	Host string
 	Port int
+}
+
+// Address return base server address
+func (s Server) Address() string {
+	return fmt.Sprintf("https://%s:%d", s.Host, s.Port)
 }
 
 // BaseURL returns base API url for the server
@@ -63,4 +69,27 @@ func (s Server) SupportsAPIVersion(v string) (bool, error) {
 		}
 	}
 	return false, nil
+}
+
+// Health returns server health data
+func (s Server) Health() (responses.ServerHealth, error) {
+	var (
+		health responses.ServerHealth
+		err    error
+	)
+
+	url := s.Address() + "/polyanalyst/health"
+	req, err := createRequest(url, "GET", parameters.Full{})
+	if err != nil {
+		return health, err
+	}
+
+	data, err := req.Perform()
+	if err != nil {
+		return health, err
+	}
+
+	err = json.Unmarshal(data.Body, &health)
+
+	return health, err
 }
