@@ -1,8 +1,11 @@
 package polyanalyst6api
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 	"runtime"
 	"strings"
 
@@ -268,4 +271,40 @@ func (s Session) request(reqType string, path string, params parameters.Full) (R
 	r.UseSession(&s)
 
 	return r.Perform()
+}
+
+func (s Session) CustomRequest(reqType string, path string, body []byte, result any) error {
+	fullURL := s.Server.Address() + path
+
+	req, err := http.NewRequest(reqType, fullURL, bytes.NewBuffer(body))
+	if err != nil {
+		return fmt.Errorf("request creation failed: %s", err)
+	}
+
+	cookie := http.Cookie{Name: "sid", Value: s.SID}
+	req.AddCookie(&cookie)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("request failed: %s", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return fmt.Errorf("bad status code: %d", resp.StatusCode)
+	}
+
+	if result != nil {
+		data, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return fmt.Errorf("body read failed: %s", err)
+		}
+
+		err = json.Unmarshal(data, result)
+		if err != nil {
+			return fmt.Errorf("failed to parse response body: %w", err)
+		}
+	}
+
+	return nil
 }
