@@ -73,10 +73,7 @@ func (s Server) SupportsAPIVersion(v string) (bool, error) {
 
 // Health returns server health data
 func (s Server) Health() (responses.ServerHealth, error) {
-	var (
-		health responses.ServerHealth
-		err    error
-	)
+	var health responses.ServerHealth
 
 	url := s.Address() + "/polyanalyst/health"
 	req, err := createRequest(url, "GET", parameters.Full{})

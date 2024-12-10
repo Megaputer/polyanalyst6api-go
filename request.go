@@ -50,10 +50,7 @@ func (r *request) UseSession(s *Session) {
 }
 
 func (r request) Perform() (RequestResult, error) {
-	var (
-		err    error
-		result RequestResult
-	)
+	var result RequestResult
 
 	client := &http.Client{
 		Timeout: RequestTimeout,
@@ -61,20 +58,20 @@ func (r request) Perform() (RequestResult, error) {
 
 	resp, err := client.Do(r.httpReq)
 	if err != nil {
-		return result, fmt.Errorf("request execution error: %s", err)
+		return result, fmt.Errorf("request execution error: %w", err)
 	}
 	defer closeBody(resp)
 
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return result, fmt.Errorf("failed to read response body: %s", err)
+		return result, fmt.Errorf("failed to read response body: %w", err)
 	}
 
 	if resp.StatusCode != 200 && resp.StatusCode != 202 {
 		var errorData serverErrorData
 		err = json.Unmarshal(data, &errorData)
 		if err != nil {
-			return result, fmt.Errorf("failed to parse server error [%s]: %s", data, err)
+			return result, fmt.Errorf("failed to parse server error [%s]: %w", data, err)
 		}
 
 		return result, errorData.Content
