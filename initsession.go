@@ -1,6 +1,7 @@
 package polyanalyst6api
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
@@ -13,7 +14,7 @@ func InitSession(server *Server, version string, login string, password string, 
 
 	supports, err := server.SupportsAPIVersion(version)
 	if err != nil {
-		return session, fmt.Errorf("failed to check if the passed API version is supported: %s", err)
+		return session, fmt.Errorf("failed to check if the passed API version is supported: %w", err)
 	}
 
 	if !supports {
@@ -23,7 +24,7 @@ func InitSession(server *Server, version string, login string, password string, 
 	url := server.BaseURL() + fmt.Sprintf("/v%s/login?uname=%s&pwd=%s&useLDAP=%s&svr=%s", version, login, password, boolToURLParam(useLDAP), LDAPServer)
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
-		return session, fmt.Errorf("building request error: %s", err)
+		return session, fmt.Errorf("building request error: %w", err)
 	}
 
 	client := &http.Client{
@@ -32,19 +33,23 @@ func InitSession(server *Server, version string, login string, password string, 
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return session, fmt.Errorf("request execution error: %s", err)
+		return session, fmt.Errorf("request execution error: %w", err)
 	}
 	defer closeBody(resp)
 
 	if resp.StatusCode != 200 {
 		bodyBytes, err := io.ReadAll(resp.Body)
-		msg := ""
 		if err != nil {
-			msg = "*failed to retrieve*"
-		} else {
-			msg = string(bodyBytes)
+			return session, fmt.Errorf("failed to read request response: %w", err)
 		}
-		return session, fmt.Errorf("bad response status: %d. Error: %s", resp.StatusCode, msg)
+
+		var serverErr ServerError
+		err = json.Unmarshal(bodyBytes, &serverErr)
+		if err != nil {
+			return session, fmt.Errorf("failed to parse request response: %w", err)
+		}
+
+		return session, fmt.Errorf("bad response status: %d. Error: %w", resp.StatusCode, serverErr)
 	}
 
 	for _, c := range resp.Cookies() {

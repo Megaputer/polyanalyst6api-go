@@ -6,26 +6,28 @@ import (
 
 // ServerError represents PolyAnalyst server error
 type ServerError struct {
-	Code    int    `json:"code"`
-	Title   string `json:"title"`
-	Message string `json:"message"`
+	Info struct {
+		Code    int    `json:"code"`
+		Title   string `json:"title"`
+		Message string `json:"message"`
+	} `json:"error"`
 }
 
 // Msg returns message if there is and [empty] otherwise
 func (e ServerError) Msg() string {
-	if len(e.Message) == 0 {
+	if len(e.Info.Message) == 0 {
 		return "[empty]"
 	}
-	return e.Message
+	return e.Info.Message
 }
 
 func (e ServerError) Error() string {
-	msg := strconv.Itoa(e.Code)
-	if len(e.Title) > 0 {
-		msg += ": " + e.Title
+	msg := strconv.Itoa(e.Info.Code)
+	if len(e.Info.Title) > 0 {
+		msg += ": " + e.Info.Title
 	}
-	if len(e.Message) > 0 {
-		msg += ": " + e.Message
+	if len(e.Info.Message) > 0 {
+		msg += ": " + e.Info.Message
 	}
 	return msg
 }
