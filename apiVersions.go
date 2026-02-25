@@ -1,5 +1,7 @@
 package polyanalyst6api
 
+import "slices"
+
 var apiVersions = map[string][]string{
 	"1.0": {
 		"/project/nodes",
@@ -24,12 +26,7 @@ var apiVersions = map[string][]string{
 }
 
 func checkPathSupported(v string, url string) bool {
-	for _, existingURL := range apiVersions[v] {
-		if existingURL == url {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(apiVersions[v], url)
 }
 
 func pathSupportedIn(url string) []string {

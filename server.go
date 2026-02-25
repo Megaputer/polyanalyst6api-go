@@ -3,6 +3,7 @@ package polyanalyst6api
 import (
 	"encoding/json"
 	"fmt"
+	"slices"
 
 	"github.com/Megaputer/polyanalyst6api-go/parameters"
 	"github.com/Megaputer/polyanalyst6api-go/responses"
@@ -63,10 +64,8 @@ func (s Server) SupportsAPIVersion(v string) (bool, error) {
 		return res, fmt.Errorf("failed to get supported API versions: %s", err)
 	}
 
-	for _, srvVersion := range supportedVersions {
-		if srvVersion == v {
-			return true, nil
-		}
+	if slices.Contains(supportedVersions, v) {
+		return true, nil
 	}
 	return false, nil
 }

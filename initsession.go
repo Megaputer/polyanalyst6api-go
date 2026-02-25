@@ -2,7 +2,8 @@ package polyanalyst6api
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
+
 	"net/http"
 )
 
@@ -36,7 +37,7 @@ func InitSession(server *Server, version string, login string, password string, 
 	defer closeBody(resp)
 
 	if resp.StatusCode != 200 {
-		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		bodyBytes, err := io.ReadAll(resp.Body)
 		msg := ""
 		if err != nil {
 			msg = "*failed to retrieve*"
