@@ -1,15 +1,5 @@
 package polyanalyst6api
 
-// SetAlphaErrorProcessing sets the alpha mode (new error structure)
-func SetAlphaErrorProcessing() {
-	branch = "alpha"
-}
-
-// SetMainErrorProcessing sets the main mode
-func SetMainErrorProcessing() {
-	branch = "main"
-}
-
 // IsPABUSYError determines if this is a PABUSY error
 func IsPABUSYError(err error) bool {
 	serverError, ok := err.(ServerError)
