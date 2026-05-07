@@ -22,10 +22,6 @@ type request struct {
 	// params  parameters.Full
 }
 
-type serverErrorData struct {
-	Content ServerError `json:"error"`
-}
-
 func createRequest(path string, reqType string, params parameters.Full) (request, error) {
 	var (
 		retReq request
@@ -69,13 +65,13 @@ func (r request) Perform() (RequestResult, error) {
 	}
 
 	if resp.StatusCode != 200 && resp.StatusCode != 202 {
-		var errorData serverErrorData
+		var errorData ServerError
 		err = json.Unmarshal(data, &errorData)
 		if err != nil {
 			return result, fmt.Errorf("failed to parse server error [%s]: %w", data, err)
 		}
 
-		return result, errorData.Content
+		return result, errorData
 	}
 
 	result.Body = data
