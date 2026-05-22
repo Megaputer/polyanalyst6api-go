@@ -70,22 +70,24 @@ func (s Server) SupportsAPIVersion(v string) (bool, error) {
 	return false, nil
 }
 
-// Health returns server health data
 func (s Server) Health() (responses.ServerHealth, error) {
 	var health responses.ServerHealth
 
 	url := s.Address() + "/polyanalyst/health"
 	req, err := createRequest(url, "GET", parameters.Full{})
 	if err != nil {
-		return health, err
+		return health, fmt.Errorf("request configuration error: %w", err)
 	}
 
 	data, err := req.Perform()
 	if err != nil {
-		return health, err
+		return health, fmt.Errorf("request error: %w", err)
 	}
 
 	err = json.Unmarshal(data.Body, &health)
+	if err != nil {
+		return health, fmt.Errorf("failed to parse response: %w; content: %s", err, data.Body)
+	}
 
-	return health, err
+	return health, nil
 }
