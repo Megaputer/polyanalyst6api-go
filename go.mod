@@ -1,3 +1,3 @@
 module github.com/Megaputer/polyanalyst6api-go
 
-go 1.26.2
+go 1.26.3
